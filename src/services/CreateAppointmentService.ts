@@ -3,6 +3,7 @@ import { getCustomRepository } from 'typeorm';
 
 import Appointment from '../models/Appointment';
 import AppointmentsRepository from '../repositories/AppointmentsRepository';
+import AppError from '../errors/AppError';
 
 interface Request {
     provider_id: string;
@@ -11,17 +12,13 @@ interface Request {
 
 class CreateAppointmentService {
     public async execute({ provider_id, date }: Request): Promise<Appointment> {
-        const appointmentsRepository = getCustomRepository(
-            AppointmentsRepository,
-        );
+        const appointmentsRepository = getCustomRepository(AppointmentsRepository);
         const appointmentDate = startOfHour(date);
 
-        const findAppointmentInSameDate = await appointmentsRepository.findByDate(
-            appointmentDate,
-        );
+        const findAppointmentInSameDate = await appointmentsRepository.findByDate(appointmentDate);
 
         if (findAppointmentInSameDate) {
-            throw Error('This appointment is already booked');
+            throw new AppError('This appointment is already booked');
         }
 
         const appointment = appointmentsRepository.create({
