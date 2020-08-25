@@ -13,7 +13,7 @@ interface IRequest {
 @injectable()
 class CreateUserService {
 
-    constructor(@inject('AppointmentsRepository') private usersRepository: IUsersRepository) { }
+    constructor(@inject('UsersRepository') private usersRepository: IUsersRepository) { }
 
     async execute({ name, email, password }: IRequest): Promise<User> {
 
