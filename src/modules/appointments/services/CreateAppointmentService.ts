@@ -2,6 +2,7 @@ import { startOfHour, isBefore, getHours, format } from 'date-fns';
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 import Appointment from '../infra/typeorm/entities/Appointment';
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
 
@@ -16,7 +17,10 @@ class CreateAppointmentService {
     constructor(
         @inject('AppointmentsRepository') private appointmentsRepository: IAppointmentsRepository,
         @inject('NotificationsRepository') private notificationsRepository: INotificationsRepository,
-    ) { }
+        @inject('CacheProvider') private cacheProvider: ICacheProvider,
+    ) {
+        // Comment to avoid lint error
+    }
 
     public async execute({ user_id, provider_id, date }: IRequest): Promise<Appointment> {
         const appointmentDate = startOfHour(date);
@@ -51,6 +55,10 @@ class CreateAppointmentService {
             recipient_id: provider_id,
             content: `Novo agendamento para dia ${dateFormatted}`,
         });
+
+        await this.cacheProvider.invalidate(
+            `provider-appointments:${provider_id}:${format(appointmentDate, 'yyyy-M-d')}`,
+        );
 
         return appointment;
     }

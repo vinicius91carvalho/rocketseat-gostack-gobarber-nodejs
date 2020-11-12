@@ -1,5 +1,6 @@
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
+import ICashProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
@@ -15,6 +16,7 @@ class CreateUserService {
     constructor(
         @inject('UsersRepository') private usersRepository: IUsersRepository,
         @inject('HashProvider') private hashProvider: IHashProvider,
+        @inject('CacheProvider') private cacheProvider: ICashProvider,
     ) {
         // eslint-disable-next-line prettier/prettier
     }
@@ -35,6 +37,8 @@ class CreateUserService {
         });
 
         await this.usersRepository.save(user);
+
+        await this.cacheProvider.invalidatePrefix('providers-list');
 
         return user;
     }

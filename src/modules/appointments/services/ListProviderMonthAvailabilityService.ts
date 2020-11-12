@@ -15,7 +15,9 @@ type IResponse = Array<{
 
 @injectable()
 class ListProviderMonthAvailabilityService {
-    constructor(@inject('AppointmentsRepository') private appointmentsRepository: IAppointmentsRepository) { }
+    constructor(@inject('AppointmentsRepository') private appointmentsRepository: IAppointmentsRepository) {
+        // Comment to avoid lint error
+    }
 
     public async execute({ provider_id, year, month }: IRequest): Promise<IResponse> {
         const appointments = await this.appointmentsRepository.findAllInMonthFromProvider({
