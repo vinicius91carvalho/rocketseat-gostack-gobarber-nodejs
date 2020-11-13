@@ -1,4 +1,5 @@
 import ListProviderAppointmentsService from '@modules/appointments/services/ListProviderAppointmentsService';
+import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
@@ -16,6 +17,6 @@ export default class ProviderAppointmentsController {
             year: Number(year),
         });
 
-        return response.json(appointments);
+        return response.json(classToClass(appointments));
     }
 }
