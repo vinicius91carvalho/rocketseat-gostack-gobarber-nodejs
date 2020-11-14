@@ -24,9 +24,6 @@ export default {
         disk: {
             tmpFolder,
             uploadsFolder: path.resolve(tmpFolder, 'uploads'),
-            aws: {
-                bucket: process.env.S3_BUCKET,
-            },
             storage: multer.diskStorage({
                 destination: tmpFolder,
                 filename(request, file, callback) {
