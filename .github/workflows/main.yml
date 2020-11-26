@@ -57,6 +57,6 @@ jobs:
             cd ~/app/rocketseat-gostack-gobarber-nodejs
             yarn
             ./node_modules/.bin/typeorm migration:run
-            cd ~/app/rocketseat-gostack-gobarber-nodejs
+            pm2 restart gobarber-api
 
             
